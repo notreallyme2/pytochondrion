@@ -1,0 +1,4 @@
+.ipynb_checkpoints
+.jupyter
+Pipfile.lock
+.DS_store
