@@ -6,14 +6,16 @@ This module contains the functions required to run mitochondrial simulations
 """
 
 import numpy as np # type: ignore
+from scipy.integrate import solve_ivp # type: ignore
 from pytochondrion.params import *
 
-def mitochondrial_simulator(time: float, initial_values: list[float], *args, **kwargs) -> list:
+def _mitochondrial_model(time: float, initial_values: list[float], *args, **kwargs) -> list:
     
     """
     A simulator of mitochondrial energetics
     Returns a list of vectors, each containing the estimated values for each function 
     within the range of t
+
     Parameters
     ----------
     Y : list(float)
@@ -93,3 +95,18 @@ def mitochondrial_simulator(time: float, initial_values: list[float], *args, **k
     
     return [f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10]
 
+def mitochondrial_simulator(t_range: list[float], initial_values: list[float], solver: str = 'BDF'):
+    """
+    A simple wrapper function that calls scipy's `solve_ivp` function 
+    and passes in the mitochondrial model
+
+    Parameters
+    ----------
+    t_range : list(float)
+    A list containing the time range (e.g. [start, end])
+    initial_values : list(float)
+    A vector of initial values
+
+    """
+    solution = solve_ivp(_mitochondrial_model, t_range, initial_values, method=solver)
+    return solution
